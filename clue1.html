@@ -408,6 +408,27 @@ document.getElementById("check").onclick = () => {
       }
     };
 
+  
+    // ── persistence ──
+    const CLUE_KEY = "wsmb.clue1";
+    const _all = [...document.querySelectorAll(".cell-input input, .ans-cell input")];
+    const _save = () => localStorage.setItem(CLUE_KEY + ".inputs", JSON.stringify(_all.map(i => i.value)));
+    (JSON.parse(localStorage.getItem(CLUE_KEY + ".inputs") || "[]")).forEach((v, idx) => {
+      if (_all[idx] && v) _all[idx].value = v;
+    });
+    _all.forEach(i => i.addEventListener("input", _save));
+    document.getElementById("check").addEventListener("click", () => {
+      _save();
+      setTimeout(() => {
+        const won = document.getElementById("verdict").classList.contains("win");
+        if (won) localStorage.setItem(CLUE_KEY + ".solved", "true");
+        else      localStorage.removeItem(CLUE_KEY + ".solved");
+      }, 0);
+    });
+    document.getElementById("clear").addEventListener("click", () => {
+      localStorage.removeItem(CLUE_KEY + ".inputs");
+      localStorage.removeItem(CLUE_KEY + ".solved");
+    });
   </script>
 
 </body>

@@ -595,9 +595,27 @@
               .trim();
     }
 
+    function unsolvedClues() {
+      const missing = [];
+      for (let n = 1; n <= 5; n++) {
+        if (localStorage.getItem("wsmb.clue" + n + ".solved") !== "true") missing.push(n);
+      }
+      return missing;
+    }
+
     function makeArrest() {
       const g = normalize(guess.value);
       if (!g) return;
+
+      const missing = unsolvedClues();
+      if (missing.length) {
+        bubble.classList.remove("win");
+        shout.textContent = "Whoa whoa whoa — slow down, detective!";
+        body.innerHTML = "You can't go slappin' cuffs on someone without doin' the legwork. You still haven't cracked <strong>Clue " +
+          missing.join(", ") + "</strong>. We gotta keep this investigation fair — solve every clue first, otherwise we'll arrest the wrong perp and the whole case gets thrown out!";
+        extra.innerHTML = '<a class="back-cta" href="clue' + missing[0] + '.html">→ Back to Clue ' + missing[0] + '</a>';
+        return;
+      }
 
       if (ACCEPT.includes(g)) {
         bubble.classList.add("win");
