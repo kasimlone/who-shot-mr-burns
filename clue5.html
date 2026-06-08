@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Clue #5 — Mixed Ciphers</title>
 <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Special+Elite&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
@@ -158,6 +159,65 @@
   }
   .verdict.win { color: #6dff7c; }
   .verdict.lose { color: #ffaaaa; }
+
+  /* ─── Mobile responsive ─── */
+  @media (max-width: 700px) {
+    body { padding-bottom: 40px; }
+    nav.menu { flex-wrap: wrap; gap: 6px 12px; padding: 10px 14px; margin-bottom: 24px; }
+    nav.menu .badge { font-size: 1.05rem; letter-spacing: 1.5px; flex-basis: 100%; }
+    nav.menu a { font-size: 0.78rem; padding: 4px 8px; letter-spacing: 0.5px; }
+    nav.menu .spacer, nav.menu .case-id { display: none; }
+
+    h1 { font-size: 1.9rem !important; letter-spacing: 1px; }
+    p.sub { font-size: 1rem !important; }
+
+    .scene, .layout { grid-template-columns: 1fr !important; padding: 0 14px !important; gap: 20px !important; }
+    .hint-card { margin: 0 14px 20px !important; padding: 12px 14px !important; font-size: 0.9rem !important; }
+
+    /* Cipher panels */
+    .cipher-panel { padding: 28px 12px 32px !important; gap: 14px !important; }
+    .cell-cipher, .cell-input { width: 42px !important; height: 46px !important; font-size: 1.2rem !important; }
+    .cell-input input { font-size: 1.3rem !important; }
+    .cell-cipher { font-size: 1.1rem !important; }
+    .puzzle-row { gap: 14px 16px !important; justify-content: center !important; }
+
+    /* Clue 3 single-input rows */
+    .ciph-row { grid-template-columns: 1fr !important; gap: 6px !important; }
+    .ciph-cell { font-size: 1.15rem !important; padding: 10px 12px !important; }
+    .ans-cell input { font-size: 1.25rem !important; min-height: 44px !important; }
+
+    /* Reference panels */
+    .keypad-panel, .morse-panel { position: static !important; }
+    .morse-grid { grid-template-columns: repeat(2, 1fr) !important; font-size: 0.85rem !important; }
+
+    /* Speech bubble */
+    .bubble { padding: 18px 18px !important; font-size: 0.98rem !important; }
+    .bubble::before, .bubble::after { display: none !important; }
+
+    /* Suspects board */
+    .board { padding: 14px !important; gap: 30px 14px !important; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important; }
+    .polaroid { padding: 10px 10px 36px !important; }
+    .photo { height: 160px !important; }
+
+    /* Index ID card */
+    .id-card { width: 100% !important; max-width: 320px; transform: rotate(-1deg) !important; }
+    .id-body { grid-template-columns: 110px 1fr !important; }
+    .burns-set { gap: 12px !important; }
+    .burns-card { width: 150px !important; }
+    .burns-card img { height: 130px !important; }
+
+    /* Solve case file */
+    .case-file { padding: 28px 14px 60px !important; }
+    .case-content { flex-wrap: wrap !important; gap: 16px !important; padding: 8px 0 0 !important; }
+    .case-photo { width: 130px !important; padding: 8px 8px 14px !important; }
+    .case-photo img { height: 100px !important; }
+    .stamp { font-size: 1.8rem !important; letter-spacing: 3px !important; padding: 8px 18px !important; }
+    .prison img { height: 220px !important; }
+
+    .toolbar { padding: 0 14px; }
+    .btn { font-size: 1rem; padding: 8px 18px; }
+  }
+
 </style>
 </head>
 <body>
