@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Clue #2 — Number Substitution</title>
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Special+Elite&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    font-family: "Special Elite", "Courier New", monospace;
+    color: #1a1a1a;
+    background-color: #c9954a;
+    background-image:
+      radial-gradient(circle at 12% 18%, rgba(90,55,20,0.45) 0 2px, transparent 3px),
+      radial-gradient(circle at 78% 32%, rgba(60,35,10,0.40) 0 2px, transparent 3px),
+      radial-gradient(circle at 33% 67%, rgba(110,70,30,0.35) 0 2px, transparent 3px),
+      radial-gradient(circle at 88% 82%, rgba(70,40,15,0.45) 0 2px, transparent 3px),
+      radial-gradient(circle at 55% 45%, rgba(140,90,40,0.30) 0 1.5px, transparent 2.5px),
+      radial-gradient(circle at 22% 88%, rgba(80,45,15,0.40) 0 2px, transparent 3px),
+      radial-gradient(circle at 67% 12%, rgba(120,75,30,0.35) 0 1.5px, transparent 2.5px),
+      radial-gradient(circle at 5%  55%, rgba(95,55,20,0.40) 0 2px, transparent 3px),
+      radial-gradient(circle at 95% 60%, rgba(105,65,25,0.40) 0 2px, transparent 3px),
+      radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 100%);
+    background-size: 90px 90px, 110px 110px, 130px 130px, 100px 100px,
+                     70px 70px, 120px 120px, 85px 85px, 95px 95px, 105px 105px, 100% 100%;
+    padding-bottom: 80px;
+  }
+
+  /* Nav */
+  nav.menu {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #1a3a5c;
+    border-bottom: 4px solid #f0c419;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    margin-bottom: 40px;
+  }
+  nav.menu .badge {
+    font-family: "Bebas Neue", sans-serif;
+    color: #f0c419;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 0 #0a1a30;
+  }
+  nav.menu .badge::before { content: "★ "; color: #fff; }
+  nav.menu a {
+    font-family: "Bebas Neue", sans-serif;
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+    padding: 6px 14px;
+    border-radius: 4px;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  nav.menu a:hover, nav.menu a.active { background: #f0c419; color: #1a3a5c; }
+  nav.menu .spacer { flex: 1; }
+  nav.menu .case-id { color: #f0c419; font-family: "Bebas Neue"; letter-spacing: 1.5px; }
+
+  h1 {
+    font-family: "Permanent Marker", cursive;
+    text-align: center;
+    margin: 0 0 6px;
+    font-size: 2.6rem;
+    color: #fff;
+    text-shadow: 3px 3px 0 #8b0000, 6px 6px 12px rgba(0,0,0,0.6);
+    letter-spacing: 2px;
+    transform: rotate(-1deg);
+  }
+  p.sub {
+    font-family: "Permanent Marker", cursive;
+    text-align: center;
+    margin: 0 auto 14px;
+    font-size: 1.1rem;
+    color: #fffbe6;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+  }
+
+  .hint-card {
+    max-width: 760px;
+    margin: 0 auto 30px;
+    background: #fffdf3;
+    border: 3px solid #1a1a1a;
+    border-radius: 10px;
+    padding: 14px 20px;
+    box-shadow: 5px 5px 0 rgba(0,0,0,0.3);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .hint-card strong { color: #b71c1c; }
+
+  /* Cipher panel — evidence sheet */
+  .cipher-panel {
+    max-width: 940px;
+    margin: 0 auto;
+    background: #fffdf3;
+    background-image: linear-gradient(180deg, #fefcf3 0%, #f1ead0 100%);
+    border: 3px solid #1a1a1a;
+    padding: 36px 30px 42px;
+    border-radius: 6px;
+    box-shadow: 8px 10px 24px rgba(0,0,0,0.5);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 26px;
+    justify-content: center;
+    position: relative;
+  }
+  .cipher-panel::before {
+    content: "EVIDENCE";
+    position: absolute;
+    top: 10px;
+    right: 16px;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+    color: #b71c1c;
+    border: 2px solid #b71c1c;
+    padding: 2px 8px;
+    transform: rotate(4deg);
+    opacity: 0.7;
+  }
+
+  .word {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    position: relative;
+  }
+  .row {
+    display: flex;
+    gap: 4px;
+  }
+  .cipher-row { margin-bottom: 4px; }
+  .cell-cipher, .cell-input {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+  }
+  .cell-cipher {
+    background: #1a3a5c;
+    color: #f0c419;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 1px;
+    border: 2px solid #0a1a30;
+    box-shadow: inset 0 -3px 0 rgba(0,0,0,0.3);
+  }
+  .cell-input {
+    background: #fff;
+    border: 2px dashed #1a1a1a;
+    padding: 0;
+  }
+  .cell-input input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    text-align: center;
+    font-family: "Permanent Marker", cursive;
+    font-size: 1.7rem;
+    color: #b71c1c;
+    text-transform: uppercase;
+    caret-color: #b71c1c;
+  }
+  .cell-input input:focus {
+    background: rgba(240, 196, 25, 0.18);
+    border-radius: 2px;
+  }
+  .cell-input.correct {
+    background: rgba(80, 170, 90, 0.18);
+    border-style: solid;
+    border-color: #2e7d32;
+  }
+  .cell-input.correct input { color: #2e7d32; }
+
+  /* Toolbar */
+  .toolbar {
+    max-width: 940px;
+    margin: 26px auto 0;
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 1.15rem;
+    letter-spacing: 1.5px;
+    padding: 10px 22px;
+    border: 3px solid #1a1a1a;
+    border-radius: 6px;
+    background: #fff;
+    color: #1a1a1a;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 #1a1a1a;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  .btn:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #1a1a1a; }
+  .btn:active { transform: translate(0,0); box-shadow: 2px 2px 0 #1a1a1a; }
+  .btn.primary { background: #b71c1c; color: #fff; }
+  .btn.primary:hover { background: #d12424; }
+
+  .verdict {
+    max-width: 940px;
+    margin: 24px auto 0;
+    text-align: center;
+    font-family: "Permanent Marker", cursive;
+    font-size: 1.6rem;
+    min-height: 2em;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+  }
+  .verdict.win { color: #6dff7c; }
+  .verdict.lose { color: #ffaaaa; }
+</style>
+</head>
+<body>
+
+  <nav class="menu">
+    <span class="badge">SPRINGFIELD P.D.</span>
+    <a href="index.html">Home</a>
+    <a href="suspects.html">Suspects</a>
+    <a href="clue1.html">Clue 1</a>
+    <a href="clue2.html" class="active">Clue 2</a>
+    <a href="clue3.html">Clue 3</a>
+    <a href="clue4.html">Clue 4</a>
+    <a href="clue5.html">Clue 5</a>
+    <a href="solve.html">Solve It</a>
+    <span class="spacer"></span>
+    <span class="case-id">CASE #1995-WSMB</span>
+  </nav>
+
+  <h1>CLUE #2</h1>
+  <p class="sub">— Number Substitution Cipher —</p>
+
+  <div class="hint-card">
+    <p><strong>Detective's note:</strong> A torn page of numbers was found in the suspect's coat pocket. Each number is a <strong>letter of the alphabet</strong> — 1 for A, 2 for B, all the way to 26 for Z. Fill in the blue boxes and hit <em>Check</em> when you've cracked it.</p>
+  </div>
+
+  <div class="cipher-panel" id="panel"></div>
+
+  <div class="toolbar">
+    <button class="btn" id="clear">Clear</button>
+    <button class="btn primary" id="check">Check Answer</button>
+  </div>
+
+  <div class="verdict" id="verdict"></div>
+
+  <script>
+    const words = [
+      [13, 25],
+      [1, 7, 5],
+      [9, 19],
+      [1, 14],
+      [15, 4, 4],
+      [14, 21, 13, 2, 5, 18],
+    ];
+    const answer = "MY AGE IS AN ODD NUMBER";
+
+    const panel = document.getElementById("panel");
+    const allInputs = [];
+
+    words.forEach((w) => {
+      const wd = document.createElement("div");
+      wd.className = "word";
+
+      const cipherRow = document.createElement("div");
+      cipherRow.className = "row cipher-row";
+      const inputRow  = document.createElement("div");
+      inputRow.className = "row";
+
+      w.forEach((num) => {
+        const c = document.createElement("div");
+        c.className = "cell-cipher";
+        c.textContent = num;
+        cipherRow.appendChild(c);
+
+        const ic = document.createElement("div");
+        ic.className = "cell-input";
+        const inp = document.createElement("input");
+        inp.maxLength = 1;
+        inp.addEventListener("input", e => {
+          e.target.value = e.target.value.toUpperCase().replace(/[^A-Z]/g, "");
+          if (e.target.value) focusNext(e.target);
+        });
+        inp.addEventListener("keydown", e => {
+          if (e.key === "Backspace" && !e.target.value) focusPrev(e.target);
+        });
+        ic.appendChild(inp);
+        inputRow.appendChild(ic);
+        allInputs.push(inp);
+      });
+
+      wd.appendChild(cipherRow);
+      wd.appendChild(inputRow);
+      panel.appendChild(wd);
+    });
+
+    function focusNext(el) {
+      const i = allInputs.indexOf(el);
+      if (i >= 0 && i < allInputs.length - 1) allInputs[i+1].focus();
+    }
+    function focusPrev(el) {
+      const i = allInputs.indexOf(el);
+      if (i > 0) allInputs[i-1].focus();
+    }
+
+    document.getElementById("clear").onclick = () => {
+      allInputs.forEach(i => { i.value = ""; i.parentElement.classList.remove("correct"); });
+      document.getElementById("verdict").textContent = "";
+      document.getElementById("verdict").className = "verdict";
+      allInputs[0].focus();
+    };
+
+    document.getElementById("check").onclick = () => {
+      const plain = answer.replace(/ /g, "");
+      let allRight = true;
+      allInputs.forEach((i, idx) => {
+        const correct = (i.value.toUpperCase() === plain[idx]);
+        i.parentElement.classList.toggle("correct", correct);
+        if (!correct) allRight = false;
+      });
+      const v = document.getElementById("verdict");
+      if (allRight) {
+        v.textContent = "✓ CRACKED! The message reads: \"" + answer + "\"";
+        v.className = "verdict win";
+      } else {
+        v.textContent = "✗ Not quite. Remember: 1 = A, 2 = B, …";
+        v.className = "verdict lose";
+      }
+    };
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Who Shot Mr. Burns? — Case Board</title>
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Special+Elite&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    font-family: "Special Elite", "Courier New", monospace;
+    color: #1a1a1a;
+    /* Cork board: layered radial gradients for fiber speckle */
+    background-color: #c9954a;
+    background-image:
+      radial-gradient(circle at 12% 18%, rgba(90,55,20,0.45) 0 2px, transparent 3px),
+      radial-gradient(circle at 78% 32%, rgba(60,35,10,0.40) 0 2px, transparent 3px),
+      radial-gradient(circle at 33% 67%, rgba(110,70,30,0.35) 0 2px, transparent 3px),
+      radial-gradient(circle at 88% 82%, rgba(70,40,15,0.45) 0 2px, transparent 3px),
+      radial-gradient(circle at 55% 45%, rgba(140,90,40,0.30) 0 1.5px, transparent 2.5px),
+      radial-gradient(circle at 22% 88%, rgba(80,45,15,0.40) 0 2px, transparent 3px),
+      radial-gradient(circle at 67% 12%, rgba(120,75,30,0.35) 0 1.5px, transparent 2.5px),
+      radial-gradient(circle at 5%  55%, rgba(95,55,20,0.40) 0 2px, transparent 3px),
+      radial-gradient(circle at 95% 60%, rgba(105,65,25,0.40) 0 2px, transparent 3px),
+      radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 100%);
+    background-size: 90px 90px, 110px 110px, 130px 130px, 100px 100px,
+                     70px 70px, 120px 120px, 85px 85px, 95px 95px, 105px 105px, 100% 100%;
+    padding: 0 0 80px;
+  }
+
+  /* ─── Navigation ─── */
+  nav.menu {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #1a3a5c;
+    border-bottom: 4px solid #f0c419;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    margin-bottom: 40px;
+  }
+  nav.menu .badge {
+    font-family: "Bebas Neue", sans-serif;
+    color: #f0c419;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 0 #0a1a30;
+  }
+  nav.menu .badge::before { content: "★ "; color: #fff; }
+  nav.menu a {
+    font-family: "Bebas Neue", sans-serif;
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+    padding: 6px 14px;
+    border-radius: 4px;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  nav.menu a:hover, nav.menu a.active { background: #f0c419; color: #1a3a5c; }
+  nav.menu .spacer { flex: 1; }
+  nav.menu .case-id { color: #f0c419; font-family: "Bebas Neue"; letter-spacing: 1.5px; }
+
+  h1 {
+    font-family: "Permanent Marker", cursive;
+    text-align: center;
+    margin: 0 0 6px;
+    font-size: 3rem;
+    color: #fff;
+    text-shadow: 3px 3px 0 #8b0000, 6px 6px 12px rgba(0,0,0,0.6);
+    letter-spacing: 2px;
+    transform: rotate(-1.5deg);
+  }
+  p.sub {
+    font-family: "Permanent Marker", cursive;
+    text-align: center;
+    margin: 0 auto 40px;
+    font-size: 1.3rem;
+    color: #fffbe6;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+    transform: rotate(0.5deg);
+  }
+
+  .board {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 50px 30px;
+    padding: 20px;
+  }
+
+  /* Polaroid */
+  .polaroid {
+    position: relative;
+    background: #fdfaf0;
+    padding: 14px 14px 50px;
+    box-shadow:
+      0 2px 4px rgba(0,0,0,0.25),
+      0 10px 20px rgba(0,0,0,0.35),
+      0 18px 35px rgba(0,0,0,0.3);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    /* slight off-white paper tint */
+    background-image: linear-gradient(180deg, #fefcf3 0%, #f6f0dc 100%);
+  }
+  /* Random-ish rotations per nth child */
+  .polaroid:nth-child(1)  { transform: rotate(-4deg); }
+  .polaroid:nth-child(2)  { transform: rotate(3deg); }
+  .polaroid:nth-child(3)  { transform: rotate(-2deg); }
+  .polaroid:nth-child(4)  { transform: rotate(5deg); }
+  .polaroid:nth-child(5)  { transform: rotate(-3deg); }
+  .polaroid:nth-child(6)  { transform: rotate(2deg); }
+  .polaroid:nth-child(7)  { transform: rotate(4deg); }
+  .polaroid:nth-child(8)  { transform: rotate(-5deg); }
+  .polaroid:nth-child(9)  { transform: rotate(1deg); }
+  .polaroid:nth-child(10) { transform: rotate(-3deg); }
+  .polaroid:nth-child(11) { transform: rotate(3deg); }
+  .polaroid:nth-child(12) { transform: rotate(-2deg); }
+
+  .polaroid:hover {
+    transform: rotate(0deg) scale(1.06);
+    z-index: 10;
+    box-shadow:
+      0 4px 8px rgba(0,0,0,0.3),
+      0 15px 30px rgba(0,0,0,0.4),
+      0 25px 50px rgba(0,0,0,0.4);
+  }
+
+  /* The pushpin */
+  .pin {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #ff6b6b 0%, #c0392b 55%, #6b1a14 100%);
+    box-shadow:
+      0 2px 3px rgba(0,0,0,0.5),
+      inset -2px -2px 4px rgba(0,0,0,0.4),
+      inset 2px 2px 3px rgba(255,255,255,0.4);
+    z-index: 2;
+  }
+  .pin::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.7);
+    transform: translate(-90%, -90%);
+  }
+  /* Vary pin colors */
+  .polaroid:nth-child(3n) .pin {
+    background: radial-gradient(circle at 35% 30%, #74d0f1 0%, #1f6f9b 55%, #0d3a55 100%);
+  }
+  .polaroid:nth-child(3n+1) .pin {
+    background: radial-gradient(circle at 35% 30%, #ffe066 0%, #d4a017 55%, #6e520a 100%);
+  }
+  .polaroid:nth-child(4n) .pin {
+    background: radial-gradient(circle at 35% 30%, #a4e57a 0%, #3d8b1d 55%, #1f4a0d 100%);
+  }
+
+  .photo-wrap {
+    position: relative;
+    cursor: pointer;
+  }
+  .photo {
+    width: 100%;
+    height: 220px;
+    object-fit: contain;
+    object-position: center center;
+    display: block;
+    background: #fff;
+    filter: contrast(1.05) saturate(1.05);
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+  .cross {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transform: scale(0.7) rotate(-8deg);
+    transition: opacity 0.18s ease, transform 0.25s cubic-bezier(.5,1.7,.5,1);
+  }
+  .photo-wrap.crossed .cross {
+    opacity: 1;
+    transform: scale(2) rotate(0deg);
+  }
+  .cross {
+    object-fit: contain;
+    object-position: center center;
+  }
+
+  .caption {
+    text-align: center;
+    margin-top: 14px;
+    font-family: "Permanent Marker", cursive;
+    font-size: 1.15rem;
+    color: #1a1a1a;
+    line-height: 1.2;
+  }
+  .meta {
+    margin-top: 8px;
+    font-family: "Special Elite", monospace;
+    font-size: 0.85rem;
+    color: #4a3a2a;
+    text-align: center;
+    line-height: 1.4;
+  }
+  .meta .label { opacity: 0.6; }
+
+  /* Subtle paper grain */
+  .polaroid::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(45deg, rgba(0,0,0,0.015) 0 2px, transparent 2px 4px);
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+  <nav class="menu">
+    <span class="badge">SPRINGFIELD P.D.</span>
+    <a href="index.html">Home</a>
+    <a href="suspects.html" class="active">Suspects</a>
+    <a href="clue1.html">Clue 1</a>
+    <a href="clue2.html">Clue 2</a>
+    <a href="clue3.html">Clue 3</a>
+    <a href="clue4.html">Clue 4</a>
+    <a href="clue5.html">Clue 5</a>
+    <a href="solve.html">Solve It</a>
+    <span class="spacer"></span>
+    <span class="case-id">CASE #1995-WSMB</span>
+  </nav>
+  <h1>WHO SHOT MR. BURNS?</h1>
+  <p class="sub">— Case File: 12 Suspects —</p>
+  <div class="board" id="board"></div>
+
+  <script>
+    const suspects = [
+      { file: "barney",   name: "Barney Gumble",     age: 40, job: "Unemployed" },
+      { file: "bart",     name: "Bart Simpson",      age: 10, job: "Student" },
+      { file: "edna",     name: "Edna Krabappel",    age: 51, job: "Teacher" },
+      { file: "eleanor",  name: "Eleanor Abernathy", age: 55, job: "Crazy Cat Lady" },
+      { file: "helen",    name: "Helen Lovejoy",     age: 35, job: "House Wife" },
+      { file: "homer",    name: "Homer Simpson",     age: 39, job: "Safety Inspector" },
+      { file: "lisa",     name: "Lisa Simpson",      age: 8,  job: "Student" },
+      { file: "marge",    name: "Marge Simpson",     age: 38, job: "House Wife" },
+      { file: "ned",      name: "Ned Flanders",      age: 60, job: "Shop Owner" },
+      { file: "selma",    name: "Selma Bouvier",     age: 43, job: "DMV Worker" },
+      { file: "skinner",  name: "Seymour Skinner",   age: 51, job: "Head Teacher" },
+      { file: "smithers", name: "Waylon Smithers",   age: 43, job: "Burns's Assistant" },
+    ];
+
+    const STORAGE_KEY = "wsmb.crossedSuspects";
+    const crossed = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"));
+
+    const board = document.getElementById("board");
+    suspects.forEach(s => {
+      const el = document.createElement("div");
+      el.className = "polaroid";
+      el.innerHTML = `
+        <span class="pin"></span>
+        <div class="photo-wrap">
+          <img class="photo" src="faces/${s.file}.png" alt="${s.name}">
+          <img class="cross" src="x-mark.png" alt="X">
+
+        </div>
+        <div class="caption">${s.name}</div>
+        <div class="meta">
+          <div><span class="label">age:</span> ${s.age}</div>
+          <div><span class="label">occupation:</span> ${s.job}</div>
+        </div>
+      `;
+      const wrap = el.querySelector(".photo-wrap");
+      if (crossed.has(s.file)) wrap.classList.add("crossed");
+      wrap.addEventListener("click", () => {
+        wrap.classList.toggle("crossed");
+        if (wrap.classList.contains("crossed")) crossed.add(s.file);
+        else crossed.delete(s.file);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify([...crossed]));
+      });
+      board.appendChild(el);
+    });
+  </script>
+</body>
+</html>
