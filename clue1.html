@@ -97,6 +97,117 @@
   }
   .hint-card strong { color: #b71c1c; }
 
+  /* ─── Caesar wheel ─── */
+  .wheel-card {
+    max-width: 760px;
+    margin: 0 auto 30px;
+    background: #fffdf3;
+    background-image: linear-gradient(180deg, #fefcf3 0%, #f1ead0 100%);
+    border: 3px solid #1a1a1a;
+    border-radius: 10px;
+    box-shadow: 6px 8px 18px rgba(0,0,0,0.4);
+    padding: 20px 24px 24px;
+    text-align: center;
+    position: relative;
+  }
+  .wheel-card h2 {
+    font-family: "Permanent Marker", cursive;
+    color: #b71c1c;
+    margin: 0 0 4px;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+  }
+  .wheel-card .wheel-sub {
+    font-size: 0.9rem;
+    margin: 0 0 14px;
+    color: #4a3a2a;
+  }
+  .wheel-stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    flex-wrap: wrap;
+  }
+  .wheel {
+    width: 320px;
+    height: 320px;
+    position: relative;
+    user-select: none;
+    touch-action: none;
+  }
+  .wheel svg { width: 100%; height: 100%; display: block; }
+  .wheel .inner-disc { cursor: grab; }
+  .wheel .inner-disc.dragging { cursor: grabbing; }
+  .wheel .pointer {
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 14px solid transparent;
+    border-right: 14px solid transparent;
+    border-top: 22px solid #b71c1c;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.4));
+    pointer-events: none;
+  }
+  .wheel-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    min-width: 160px;
+  }
+  .shift-display {
+    font-family: "Bebas Neue", sans-serif;
+    background: #1a3a5c;
+    color: #f0c419;
+    padding: 8px 14px;
+    border: 2px solid #0a1a30;
+    border-radius: 6px;
+    letter-spacing: 1.5px;
+    font-size: 1.1rem;
+    min-width: 140px;
+  }
+  .shift-display .num {
+    color: #fff;
+    font-size: 1.6rem;
+    margin-left: 6px;
+  }
+  .mapping {
+    font-family: "Special Elite", monospace;
+    font-size: 0.95rem;
+    color: #1a1a1a;
+    background: #fff;
+    border: 2px dashed #1a1a1a;
+    padding: 6px 12px;
+    border-radius: 4px;
+  }
+  .mapping .from { color: #1a3a5c; font-weight: 700; }
+  .mapping .arrow-tx { color: #b71c1c; margin: 0 6px; }
+  .mapping .to { color: #b71c1c; font-weight: 700; }
+  .wheel-btns { display: flex; gap: 8px; }
+  .wheel-btn {
+    font-family: "Bebas Neue", sans-serif;
+    background: #fff;
+    color: #1a1a1a;
+    border: 2px solid #1a1a1a;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    box-shadow: 3px 3px 0 #1a1a1a;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+  .wheel-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #1a1a1a; }
+  .wheel-btn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 #1a1a1a; }
+
+  @media (max-width: 700px) {
+    .wheel { width: 260px; height: 260px; }
+  }
+
   /* Cipher panel — styled as an evidence sheet */
   .cipher-panel {
     max-width: 940px;
@@ -324,6 +435,38 @@
     <p><strong>Detective's note:</strong> The perp left this scrawled on a napkin. Forensics says it's a <strong>Caesar cipher</strong> — every letter has been shifted by the same amount through the alphabet. Type your guess into the blue boxes below each cipher letter. Hit <em>Check</em> when you're done.</p>
   </div>
 
+  <div class="wheel-card">
+    <h2>Detective's Decoder Wheel</h2>
+    <p class="wheel-sub">Rotate the inner disc to line up cipher letters (outer, blue) with their plaintext guesses (inner). Drag the wheel, use the buttons, or click any letter.</p>
+    <div class="wheel-stage">
+      <div class="wheel" id="wheel">
+        <div class="pointer"></div>
+        <svg viewBox="0 0 320 320" aria-label="Caesar cipher wheel">
+          <circle cx="160" cy="160" r="155" fill="#1a3a5c" stroke="#0a1a30" stroke-width="3"/>
+          <circle cx="160" cy="160" r="118" fill="#fffdf3" stroke="#0a1a30" stroke-width="2"/>
+          <g id="outerTicks"></g>
+          <g id="outerRing"></g>
+          <g class="inner-disc" id="innerDisc">
+            <circle cx="160" cy="160" r="110" fill="#f0c419" stroke="#8b6914" stroke-width="2"/>
+            <g id="innerTicks"></g>
+            <circle cx="160" cy="160" r="40" fill="#b71c1c" stroke="#5a0d0d" stroke-width="2"/>
+            <text x="160" y="166" text-anchor="middle" fill="#fff" font-family="Bebas Neue, sans-serif" font-size="16" letter-spacing="1">SHIFT</text>
+            <g id="innerRing"></g>
+          </g>
+        </svg>
+      </div>
+      <div class="wheel-controls">
+        <div class="shift-display">SHIFT<span class="num" id="shiftNum">0</span></div>
+        <div class="mapping" id="mapping"><span class="from">A</span><span class="arrow-tx">→</span><span class="to">A</span></div>
+        <div class="wheel-btns">
+          <button class="wheel-btn" id="rotL" title="Shift -1">◀ −1</button>
+          <button class="wheel-btn" id="rotR" title="Shift +1">+1 ▶</button>
+        </div>
+        <button class="wheel-btn" id="rotReset">Reset</button>
+      </div>
+    </div>
+  </div>
+
   <div class="cipher-panel" id="panel"></div>
 
   <div class="toolbar">
@@ -334,6 +477,130 @@
   <div class="verdict" id="verdict"></div>
 
   <script>
+    // ── Caesar wheel ──
+    (function() {
+      const ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      const CX = 160, CY = 160;
+      const OUTER_R = 137;   // outer ring (cipher) letters radius
+      const INNER_R = 96;    // inner disc letters radius
+      const STEP = 360 / 26; // 13.846...
+      const outerRing = document.getElementById("outerRing");
+      const innerRing = document.getElementById("innerRing");
+      const outerTicks = document.getElementById("outerTicks");
+      const innerTicks = document.getElementById("innerTicks");
+      const innerDisc = document.getElementById("innerDisc");
+      const shiftNum = document.getElementById("shiftNum");
+      const mapping = document.getElementById("mapping");
+
+      // Radial dividers between each letter (offset by half a step)
+      // Outer ticks span the cipher ring; inner ticks span the inner disc.
+      for (let i = 0; i < 26; i++) {
+        const a = (-90 + (i + 0.5) * STEP) * Math.PI / 180;
+        const cos = Math.cos(a), sin = Math.sin(a);
+
+        const ot = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        ot.setAttribute("x1", CX + 119 * cos); ot.setAttribute("y1", CY + 119 * sin);
+        ot.setAttribute("x2", CX + 154 * cos); ot.setAttribute("y2", CY + 154 * sin);
+        ot.setAttribute("stroke", "#f0c419");
+        ot.setAttribute("stroke-width", "1.2");
+        ot.setAttribute("opacity", "0.55");
+        outerTicks.appendChild(ot);
+
+        const it = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        it.setAttribute("x1", CX + 41 * cos); it.setAttribute("y1", CY + 41 * sin);
+        it.setAttribute("x2", CX + 109 * cos); it.setAttribute("y2", CY + 109 * sin);
+        it.setAttribute("stroke", "#8b6914");
+        it.setAttribute("stroke-width", "1.2");
+        it.setAttribute("opacity", "0.6");
+        innerTicks.appendChild(it);
+      }
+
+      // letters arranged clockwise, A at top (angle = -90deg in SVG)
+      // Outer letters: UPRIGHT (fixed cipher ring). Inner letters: radial (rotate with disc).
+      for (let i = 0; i < 26; i++) {
+        const ang = (-90 + i * STEP) * Math.PI / 180;
+        const ox = CX + OUTER_R * Math.cos(ang);
+        const oy = CY + OUTER_R * Math.sin(ang);
+        const ix = CX + INNER_R * Math.cos(ang);
+        const iy = CY + INNER_R * Math.sin(ang);
+        const rot = i * STEP;
+
+        const t1 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        t1.setAttribute("x", ox); t1.setAttribute("y", oy);
+        t1.setAttribute("text-anchor", "middle");
+        t1.setAttribute("dominant-baseline", "central");
+        t1.setAttribute("fill", "#f0c419");
+        t1.setAttribute("font-family", "Bebas Neue, sans-serif");
+        t1.setAttribute("font-size", "20");
+        t1.textContent = ALPHA[i];
+        outerRing.appendChild(t1);
+
+        const t2 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        t2.setAttribute("x", ix); t2.setAttribute("y", iy);
+        t2.setAttribute("text-anchor", "middle");
+        t2.setAttribute("dominant-baseline", "central");
+        t2.setAttribute("fill", "#1a1a1a");
+        t2.setAttribute("font-family", "Bebas Neue, sans-serif");
+        t2.setAttribute("font-size", "20");
+        t2.setAttribute("transform", `rotate(${rot} ${ix} ${iy})`);
+        t2.textContent = ALPHA[i];
+        innerRing.appendChild(t2);
+      }
+
+      let shift = 0;
+      function setShift(s) {
+        shift = ((s % 26) + 26) % 26;
+        innerDisc.setAttribute("transform", `rotate(${shift * STEP} ${CX} ${CY})`);
+        shiftNum.textContent = shift;
+        const plain = ALPHA[(26 - shift) % 26];
+        mapping.innerHTML = `<span class="from">A</span><span class="arrow-tx">→</span><span class="to">${plain}</span>`;
+      }
+      setShift(0);
+
+      document.getElementById("rotL").onclick = () => setShift(shift - 1);
+      document.getElementById("rotR").onclick = () => setShift(shift + 1);
+      document.getElementById("rotReset").onclick = () => setShift(0);
+
+      // drag to rotate
+      const wheelEl = document.getElementById("wheel");
+      let dragging = false;
+      let startAngle = 0;
+      let startShift = 0;
+
+      function pointerAngle(e) {
+        const r = wheelEl.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+        const x = (e.touches ? e.touches[0].clientX : e.clientX) - cx;
+        const y = (e.touches ? e.touches[0].clientY : e.clientY) - cy;
+        return Math.atan2(y, x) * 180 / Math.PI;
+      }
+      function onDown(e) {
+        dragging = true;
+        innerDisc.classList.add("dragging");
+        startAngle = pointerAngle(e);
+        startShift = shift;
+        e.preventDefault();
+      }
+      function onMove(e) {
+        if (!dragging) return;
+        const a = pointerAngle(e);
+        let delta = a - startAngle;
+        const steps = Math.round(delta / STEP);
+        setShift(startShift + steps);
+      }
+      function onUp() {
+        dragging = false;
+        innerDisc.classList.remove("dragging");
+      }
+      wheelEl.addEventListener("mousedown", onDown);
+      window.addEventListener("mousemove", onMove);
+      window.addEventListener("mouseup", onUp);
+      wheelEl.addEventListener("touchstart", onDown, { passive: false });
+      window.addEventListener("touchmove", onMove, { passive: false });
+      window.addEventListener("touchend", onUp);
+    })();
+
     // Encrypted message split into words
     const words = ["S", "KW", "K", "PEVVI", "QBYGX", "KNEVD"];
     const answer = "I AM A FULLY GROWN ADULT";          // plaintext
