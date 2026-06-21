@@ -537,7 +537,7 @@
     <a href="clue4.html">Clue 4</a>
     <a href="clue5.html">Clue 5</a>
     <a href="solve.html">Solve It</a>
-    <a href="more.html">More Sites</a>
+    <a href="https://www.kasimlone.co.uk">More Sites</a>
     <span class="spacer"></span>
     <span style="color:#f0c419; font-family:'Bebas Neue'; letter-spacing:1.5px;">CASE #1995-WSMB</span>
   </nav>
@@ -626,53 +626,25 @@
   </footer>
 
   <div class="fv-overlay" id="fvOverlay" role="dialog" aria-modal="true" aria-labelledby="fvTitle">
-    <div class="fv-card">
-      <h2 class="fv-title" id="fvTitle">Psst — first time here?</h2>
-      <p class="fv-body">Check out <strong>More Sites</strong> up top to see other projects I've built. Welcome to Springfield, detective!</p>
+    <div class="fv-card" style="position:relative;top:auto;left:auto;transform:rotate(-1.5deg);margin:14vh auto 0;">
+      <h2 class="fv-title" id="fvTitle">📢 We're Moving!</h2>
+      <p class="fv-body">This project will be moving soon. In the future, you'll be able to find it (and all my other projects) at <strong>kasimlone.co.uk</strong>.</p>
       <div class="fv-actions">
-        <a class="fv-btn" href="more.html">Take me there</a>
-        <button class="fv-close" id="fvClose" type="button">Maybe later</button>
+        <a class="fv-btn" href="https://www.kasimlone.co.uk">Visit kasimlone.co.uk</a>
+        <button class="fv-close" id="fvClose" type="button">Dismiss</button>
       </div>
     </div>
   </div>
 
   <script>
     (function() {
-      try {
-        if (localStorage.getItem('wsmb_seen_more_hint')) return;
-      } catch (e) {}
       var overlay = document.getElementById('fvOverlay');
       var closeBtn = document.getElementById('fvClose');
-      var moreLink = document.querySelector('nav.menu a[href="more.html"]');
       var card = overlay.querySelector('.fv-card');
-      function positionCard() {
-        if (!moreLink) return;
-        var r = moreLink.getBoundingClientRect();
-        var linkCenter = r.left + r.width / 2;
-        var cardWidth = card.offsetWidth || 320;
-        var vw = window.innerWidth;
-        var margin = 12;
-        var left = linkCenter - cardWidth / 2;
-        if (left < margin) left = margin;
-        if (left + cardWidth > vw - margin) left = vw - margin - cardWidth;
-        var top = r.bottom + 18;
-        card.style.left = left + 'px';
-        card.style.top = top + 'px';
-        var arrow = linkCenter - left;
-        card.style.setProperty('--arrow-left', arrow + 'px');
-      }
-      function dismiss() {
-        overlay.classList.remove('show');
-        if (moreLink) moreLink.classList.remove('fv-highlight');
-        try { localStorage.setItem('wsmb_seen_more_hint', '1'); } catch (e) {}
-      }
-      setTimeout(function() {
-        overlay.classList.add('show');
-        if (moreLink) moreLink.classList.add('fv-highlight');
-        positionCard();
-      }, 600);
-      window.addEventListener('resize', positionCard);
-      window.addEventListener('scroll', positionCard);
+      // hide the speech-bubble arrow since the card isn't anchored to a nav link
+      card.style.setProperty('--arrow-left', '-9999px');
+      function dismiss() { overlay.classList.remove('show'); }
+      setTimeout(function() { overlay.classList.add('show'); }, 400);
       closeBtn.addEventListener('click', dismiss);
       overlay.addEventListener('click', function(e) { if (e.target === overlay) dismiss(); });
       document.addEventListener('keydown', function(e) { if (e.key === 'Escape') dismiss(); });

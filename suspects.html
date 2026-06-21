@@ -290,6 +290,40 @@
     .btn { font-size: 1rem; padding: 8px 18px; }
   }
 
+  /* ─── Moving-soon overlay ─── */
+  .fv-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 9999;
+    display: none; animation: fv-fade 0.3s ease;
+  }
+  .fv-overlay.show { display: block; }
+  @keyframes fv-fade { from { opacity: 0; } to { opacity: 1; } }
+  .fv-card {
+    background: #fffdf3; border: 3px solid #1a1a1a; border-radius: 12px;
+    box-shadow: 8px 8px 0 rgba(0,0,0,0.45); padding: 22px 26px;
+    width: 320px; font-family: "Special Elite", monospace;
+    transform: rotate(-1.5deg); margin: 14vh auto 0; position: relative;
+  }
+  .fv-title {
+    font-family: "Permanent Marker", cursive; color: #b71c1c;
+    font-size: 1.35rem; margin: 0 0 8px; letter-spacing: 1px;
+  }
+  .fv-body { font-size: 0.98rem; line-height: 1.5; margin: 0 0 14px; color: #1a1a1a; }
+  .fv-body strong { color: #1a3a5c; }
+  .fv-actions { display: flex; gap: 10px; align-items: center; }
+  .fv-btn {
+    font-family: "Bebas Neue", sans-serif; background: #b71c1c; color: #fff;
+    text-decoration: none; font-size: 1rem; letter-spacing: 1.5px;
+    padding: 8px 18px; border: 2px solid #1a1a1a; border-radius: 4px;
+    box-shadow: 3px 3px 0 #1a1a1a; cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+  .fv-btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #1a1a1a; background: #d32424; }
+  .fv-close {
+    background: transparent; border: none; font-family: "Special Elite", monospace;
+    color: #4a3a2a; text-decoration: underline; cursor: pointer;
+    font-size: 0.88rem; padding: 4px 6px;
+  }
+
 </style>
   <!-- Vercel Web Analytics -->
   <script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
@@ -309,7 +343,7 @@
     <a href="clue4.html">Clue 4</a>
     <a href="clue5.html">Clue 5</a>
     <a href="solve.html">Solve It</a>
-    <a href="more.html">More Sites</a>
+    <a href="https://www.kasimlone.co.uk">More Sites</a>
     <span class="spacer"></span>
     <span class="case-id">CASE #1995-WSMB</span>
   </nav>
@@ -372,5 +406,27 @@
     All character images and likenesses are property of <strong>The Simpsons</strong> &copy; 20th Television / Disney.<br>
     This site is a fan-made educational project and is <strong>not for sale</strong>.
   </footer>
+
+  <div class="fv-overlay" id="fvOverlay" role="dialog" aria-modal="true" aria-labelledby="fvTitle">
+    <div class="fv-card">
+      <h2 class="fv-title" id="fvTitle">📢 We're Moving!</h2>
+      <p class="fv-body">This project will be moving soon. In the future, you'll be able to find it (and all my other projects) at <strong>kasimlone.co.uk</strong>.</p>
+      <div class="fv-actions">
+        <a class="fv-btn" href="https://www.kasimlone.co.uk">Visit kasimlone.co.uk</a>
+        <button class="fv-close" id="fvClose" type="button">Dismiss</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function() {
+      var overlay = document.getElementById('fvOverlay');
+      var closeBtn = document.getElementById('fvClose');
+      function dismiss() { overlay.classList.remove('show'); }
+      setTimeout(function() { overlay.classList.add('show'); }, 400);
+      closeBtn.addEventListener('click', dismiss);
+      overlay.addEventListener('click', function(e) { if (e.target === overlay) dismiss(); });
+      document.addEventListener('keydown', function(e) { if (e.key === 'Escape') dismiss(); });
+    })();
+  </script>
 </body>
 </html>
